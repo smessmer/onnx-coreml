@@ -39,7 +39,6 @@ setup(
         'click',
         'numpy',
         'coremltools>=0.6.3',
-        'onnx>=0.2.1'
     ],
     setup_requires=['pytest-runner'],
     tests_require=[
