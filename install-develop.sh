@@ -18,10 +18,20 @@ _check_submodule_present() {
 _check_submodule_present caffe2
 _check_submodule_present onnx
 
-if ! echo "$PATH" | grep ccache; then
-    echo Warning: CCache is not in the path. Incremental builds will be slow.
-    read -p "Press enter to continue"
-fi
+_check_compilers_use_ccache() {
+    COMPILERS_WITHOUT_CCACHE=""
+    for compiler in gcc g++ cc c++; do
+        if ! readlink $(which $compiler) | grep ccache; then
+            COMPILERS_WITHOUT_CCACHE="$COMPILERS_WITHOUT_CCACHE $compiler"
+        fi
+    done
+
+    if [ "$COMPILERS_WITHOUT_CCACHE" != "" ]; then
+        echo Warning: Compilers not set up for ccache: $COMPILERS_WITHOUT_CCACHE. Incremental builds will be slow.
+        read -p "Press enter to continue"
+    fi
+}
+_check_compilers_use_ccache
 
 
 mkdir -p "$BUILD_DIR"
